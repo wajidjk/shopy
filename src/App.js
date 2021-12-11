@@ -2,6 +2,8 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./Pages/home";
 import Products from "./Pages/products";
 import AddProduct from "./Pages/addProduct";
+import ProductDetail from "./Pages/productDetail";
+
 function App() {
   return (
     <div className="App">
@@ -14,6 +16,9 @@ function App() {
         </Routes>
         <Routes>
           <Route exact path="/addProduct" element={<AddProduct />}></Route>
+        </Routes>
+        <Routes>
+          <Route exact path="/products/:id" element={<ProductDetail />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

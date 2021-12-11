@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { CustomButton } from "../components/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import { Autocomplete, Input, InputAdornment, TextField } from "@mui/material";
 import "./addProduct.scss";
@@ -10,6 +10,8 @@ import { nanoid } from "nanoid";
 export default function AddProduct(props) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [search, setSearch] = useSearchParams();
+  console.log(search.get("id"));
   const { state, setState } = useContext(appContext);
 
   const navigate = useNavigate();

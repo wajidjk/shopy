@@ -14,11 +14,10 @@ export default function Products(props) {
 
   const onClick = () => {
     navigate("/addProduct");
-    console.log("hi");
   };
 
-  const handleRowClick = () => {
-    navigate("/productDetail");
+  const handleRowClick = (id) => {
+    navigate("/products/" + id);
   };
 
   const myProducts = [
@@ -80,7 +79,9 @@ export default function Products(props) {
           pageSize={5}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick={true}
-          onRowClick={handleRowClick}
+          onRowClick={(params, events, details) => {
+            handleRowClick(params.id);
+          }}
         />
       </div>
     </div>
