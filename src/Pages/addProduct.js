@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { CustomButton } from "../components/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Typography from "@mui/material/Typography";
-import { Autocomplete, Input, InputAdornment, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import "./addProduct.scss";
 import { appContext } from "../store/ui";
 import { nanoid } from "nanoid";
@@ -13,12 +12,21 @@ export default function AddProduct(props) {
   const [search, setSearch] = useSearchParams();
   console.log(search.get("id"));
   const { state, setState } = useContext(appContext);
-
   const navigate = useNavigate();
 
-  const onClick = () => {
-    const product = { name, price, id: nanoid() };
-    setState([...state, product]);
+  const onClick = () => {};
+
+  const onDoneClick = () => {
+    if (search.get("id")) {
+      const _products = [...state];
+      const product = _products.find((el) => el.id === search.get("id"));
+      product.name = name;
+      product.price = price;
+      setState(_products);
+    } else {
+      const product = { name, price, id: nanoid() };
+      setState([...state, product]);
+    }
     navigate("/products");
   };
 
@@ -33,6 +41,16 @@ export default function AddProduct(props) {
 
   console.log(state);
 
+  useEffect(() => {
+    if (search.get("id")) {
+      const data = state.find((value) => {
+        return value.id == search.get("id");
+      });
+      setName(data.name);
+      setPrice(data.price);
+    }
+  }, []);
+
   return (
     <div>
       <div className="addProduct-header">
@@ -41,7 +59,7 @@ export default function AddProduct(props) {
         </div>
         <div></div>
         <div>
-          <CustomButton text={"Done "} onClick={onClick} />
+          <CustomButton text={"Done "} onClick={onDoneClick} />
         </div>
       </div>
       <div>
