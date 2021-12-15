@@ -6,7 +6,7 @@ import ProductDetail from "./Pages/productDetail";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<Home />}></Route>

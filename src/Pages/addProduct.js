@@ -1,85 +1,51 @@
-import React, { useState, useContext, useEffect } from "react";
-import { CustomButton } from "../components/button";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { TextField } from "@mui/material";
-import "./addProduct.scss";
-import { appContext } from "../store/ui";
-import { nanoid } from "nanoid";
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Card from '../components/card';
+import './addProduct.scss';
+import { appContext } from '../store/ui';
 
 export default function AddProduct(props) {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [search, setSearch] = useSearchParams();
-  console.log(search.get("id"));
-  const { state, setState } = useContext(appContext);
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const onClick = () => {};
+    const [state, setState] = useState({
+        image: null,
+        name: '',
+        description: '',
+        price: 0,
+    });
 
-  const onDoneClick = () => {
-    if (search.get("id")) {
-      const _products = [...state];
-      const product = _products.find((el) => el.id === search.get("id"));
-      product.name = name;
-      product.price = price;
-      setState(_products);
-    } else {
-      const product = { name, price, id: nanoid() };
-      setState([...state, product]);
-    }
-    navigate("/products");
-  };
+    const [eccodedImage, setEncodedImage] = useState();
 
-  function handleNameChange(evt) {
-    setName(evt.target.value);
-  }
+    const onSubmit = () => {
+        //TODO  post request to add product
 
-  function handlePriceChange(evt) {
-    setPrice(evt.target.value);
-  }
-  console.log(name, price);
+        navigate('/products');
+    };
 
-  console.log(state);
+    useEffect(() => {
+        const { image } = state;
 
-  useEffect(() => {
-    if (search.get("id")) {
-      const data = state.find((value) => {
-        return value.id == search.get("id");
-      });
-      setName(data.name);
-      setPrice(data.price);
-    }
-  }, []);
+        if (state.image) {
+            var fileReader = new FileReader();
+            fileReader.readAsDataURL(image);
 
-  return (
-    <div>
-      <div className="addProduct-header">
-        <div>
-          <CustomButton text={"Cancel "} onClick={onClick} />
+            console.log(fileReader);
+
+            fileReader.onloadend = () => {
+                setEncodedImage(fileReader.result);
+            };
+
+            fileReader.onerror = () => {
+                console.log('error reading file');
+            };
+        } else {
+            setEncodedImage(null);
+        }
+    }, [state.image]);
+
+    return (
+        <div className="parent">
+            <Card value={state} setValue={setState} eccodedImage={eccodedImage} onSubmit={onSubmit} />
         </div>
-        <div></div>
-        <div>
-          <CustomButton text={"Done "} onClick={onDoneClick} />
-        </div>
-      </div>
-      <div>
-        <TextField
-          name="Product Name"
-          value={name}
-          onChange={handleNameChange}
-          label="Product Name"
-        />
-        <br />
-      </div>
-      <div>
-        <TextField
-          name="Price"
-          value={price}
-          onChange={handlePriceChange}
-          label="Price"
-        />
-        <br />
-      </div>
-    </div>
-  );
+    );
 }
