@@ -1,18 +1,14 @@
 .card {
-    width: 350px;
-    display: flex;
-    flex-direction: column;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
 
-    img {
-        width: 100%;
-    }
+  img {
+    width: 100%;
+  }
 
-    & > * {
-        margin-bottom: 10px;
-        width: 100%;
-
-        .MuiFormControl-root {
-            width: 100%;
-        }
-    }
+  & > * {
+    margin-bottom: 10px !important;
+    width: 100%;
+  }
 }

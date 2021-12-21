@@ -1,12 +1,12 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Button, createStyles, TextareaAutosize } from '@mui/material';
+import { Button, createStyles, TextareaAutosize, Typography } from '@mui/material';
 import './card.scss';
 
 const defaultImage = 'http://www.vvc.cl/wp-content/uploads/2016/09/ef3-placeholder-image.jpg';
 
 export default function Card(props) {
-    const { value, setValue, eccodedImage, onSubmit } = props;
+    const { value, setValue, eccodedImage, onSubmit, edit } = props;
 
     const onChangeHandler = e => {
         setValue(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -21,32 +21,58 @@ export default function Card(props) {
 
     return (
         <div className="card">
-            <input
-                name="file"
-                type={'file'}
-                id={'image'}
-                style={{
-                    display: 'none',
-                }}
-                onChange={onFileChange}
-            />
+            {edit && (
+                <input
+                    name="file"
+                    type={'file'}
+                    id={'image'}
+                    style={{
+                        display: 'none',
+                    }}
+                    onChange={onFileChange}
+                />
+            )}
 
-            <label htmlFor="image">
+            <label htmlFor={'image'}>
                 <img src={eccodedImage || defaultImage} />
             </label>
 
-            <div>
-                <TextField onChange={onChangeHandler} name="name" value={value.name} label="Outlined" />
-            </div>
-            <TextareaAutosize name="description" minRows={4} placeholder="Write a little description about the product" style={{ width: '100%' }} onChange={onChangeHandler} />
-            <div>
-                <TextField name="price" label="Outlined" type={'number'} onChange={onChangeHandler} />
-            </div>
-            <div>
+            {edit ? (
+                <TextField onChange={onChangeHandler} name="name" value={value.name} label="Outlined" id="myId" />
+            ) : (
+                <Typography align="center" variant="h3" gutterBottom>
+                    {value.name}
+                </Typography>
+            )}
+
+            {edit ? (
+                <TextareaAutosize
+                    value={value.description}
+                    name="description"
+                    minRows={4}
+                    placeholder="Write a little description about the product"
+                    style={{ width: '100%' }}
+                    onChange={onChangeHandler}
+                />
+            ) : (
+                <Typography align="center" variant="h3" gutterBottom>
+                    {value.description}
+                </Typography>
+            )}
+
+            {edit ? (
+                <TextField value={value.price} name="price" label="Outlined" type={'number'} onChange={onChangeHandler} id="myId" />
+            ) : (
+                <Typography align="center" variant="h4" gutterBottom>
+                    {value.price}
+                </Typography>
+            )}
+
+            {edit && (
                 <Button variant="contained" onClick={onSubmit}>
                     Add Product
                 </Button>
-            </div>
+            )}
         </div>
     );
 }

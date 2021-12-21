@@ -1,75 +1,56 @@
-import React, { useState, useContext } from "react";
-import { CustomButton } from "../components/button";
-import { useNavigate, useParams } from "react-router-dom";
-import Typography from "@mui/material/Typography";
-import {
-  Autocomplete,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Input,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import { appContext } from "../store/ui";
-import { Box } from "@mui/system";
+import React, { useState, useEffect } from 'react';
+import { CustomButton } from '../components/button';
+import Card from '../components/card';
+
+import { useNavigate, useParams } from 'react-router-dom';
+import Typography from '@mui/material/Typography';
+import axios from 'axios';
 
 export default function ProductDetail(props) {
-  const navigate = useNavigate();
-  const params = useParams();
-  const { state, setState } = useContext(appContext);
+    const navigate = useNavigate();
+    const params = useParams();
+    const [product, setProduct] = useState('');
 
-  const onClickEdit = () => {
-    navigate("/addProduct?id=" + params.id);
-  };
-  const onClickProduct = () => {
-    navigate("/products");
-  };
+    const onClickEdit = () => {
+        navigate('/addProduct?id=' + params.id);
+    };
+    const onClickProduct = () => {
+        navigate('/products');
+    };
 
-  const product = state.find((value) => {
-    return value.id == params.id;
-  });
-  console.log("ye mera ha", product);
+    const fetchProduct = async () => {
+        const response = await axios.get('http://localhost:8000/api/product/' + params.id);
+        setProduct(response.data.product);
+    };
 
-  const bull = (
-    <Box
-      component="span"
-      sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-    >
-      •
-    </Box>
-  );
+    useEffect(() => {
+        fetchProduct();
+    }, []);
 
-  return (
-    <div>
-      <div className="addProduct-header">
+    return (
         <div>
-          <CustomButton text={"Products"} onClick={onClickProduct} />
+            <div className="addProduct-header">
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        padding: ' 1rem',
+                        marginBottom: '2rem',
+                    }}
+                >
+                    <CustomButton text={'All Products'} onClick={onClickProduct} />
+                    <CustomButton text={'Edit '} onClick={onClickEdit} />
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Card eccodedImage={'http://localhost:8000/' + product.image} setValue={setProduct} value={product} />
+                </div>
+            </div>
+            <div></div>
         </div>
-        <div></div>
-        <div>
-          <CustomButton text={"Edit "} onClick={onClickEdit} />
-        </div>
-      </div>
-      <div>
-        <Card sx={{ minWidth: 275 }}>
-          <CardContent>
-            <Typography
-              sx={{ fontSize: 14 }}
-              color="text.secondary"
-              gutterBottom
-            >
-              {product.name}
-            </Typography>
-            <Typography variant="h5" component="div"></Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              {product.price}
-            </Typography>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
+    );
 }
